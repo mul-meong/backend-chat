@@ -1,4 +1,4 @@
-package com.mulmeong.test.common.config;
+package com.mulmeong.chat.common.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

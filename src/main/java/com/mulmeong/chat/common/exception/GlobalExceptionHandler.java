@@ -1,13 +1,13 @@
-package com.mulmeong.test.common.exception;
+package com.mulmeong.chat.common.exception;
 
-import com.mulmeong.test.common.response.BaseResponse;
+import com.mulmeong.chat.common.response.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.mulmeong.test.common.response.BaseResponseStatus.INTERNAL_SERVER_ERROR;
-import static com.mulmeong.test.common.response.BaseResponseStatus.INVALID_INPUT_VALUE;
+import static com.mulmeong.chat.common.response.BaseResponseStatus.INTERNAL_SERVER_ERROR;
+import static com.mulmeong.chat.common.response.BaseResponseStatus.INVALID_INPUT_VALUE;
 
 @Slf4j
 @RestControllerAdvice
