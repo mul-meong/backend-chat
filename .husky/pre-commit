@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# 루트 디렉토리로 이동
+cd "$(git rev-parse --show-toplevel)"
+
+# Gradle Checkstyle 검사 실행
+./gradlew checkstyleMain
+
+# 검사 결과 확인
+if [ $? -ne 0 ]; then
+    echo "Checkstyle 검사 실패! 커밋이 중단되었습니다."
+    exit 1
+fi
