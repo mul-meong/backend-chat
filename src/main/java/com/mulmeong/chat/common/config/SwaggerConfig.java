@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        info = @Info(title = "ㅇㅇ 도메인 API", version = "v1",
-                description = " {ㅇㅇ 도메인의 기능 나열} 서비스",
+        info = @Info(title = "채팅 도메인 API", version = "v1",
+                description = " 채팅 서비스",
                 termsOfService = "http://swagger.io/terms/")
 
 )
