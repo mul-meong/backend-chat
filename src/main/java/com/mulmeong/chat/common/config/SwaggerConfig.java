@@ -40,7 +40,7 @@ public class SwaggerConfig {
                 .addSecurityItem(securityRequirement)
                 .components(components)
                 // Swagger에서 요청보낼때 API에 추가되는 문자열
-                .addServersItem(new Server().url("/ㅇㅇ-service"));
+                .addServersItem(new Server().url("/char-service"));
         //.addServersItem(new Server().url("/"));
     }
 
