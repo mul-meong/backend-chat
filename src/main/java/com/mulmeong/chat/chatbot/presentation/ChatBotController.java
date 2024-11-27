@@ -1,7 +1,7 @@
 package com.mulmeong.chat.chatbot.presentation;
 
-import com.mulmeong.chat.chatbot.application.OpenAiService;
-import com.mulmeong.chat.common.response.BaseResponse;
+import com.mulmeong.chat.chatbot.application.ChatBotService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -15,10 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/chatrooms/chatbot")
 public class ChatBotController {
 
-    private final OpenAiService openAiService;
+    private final ChatBotService chatBotService;
 
     @GetMapping
-    public String chat(@RequestParam String message) {
-        return openAiService.chatWithCharacter(message);
+    @Operation(summary = "캐릭터 챗봇", tags = {"Chatbot Service"})
+    public String chat(
+            @Parameter(
+                    description = "캐릭터 종류",
+                    schema = @Schema(allowableValues = {"nimo", "dori"})
+            )
+            @RequestParam(value = "character") String character,
+            @RequestParam String message
+    ) {
+        return chatBotService.createChat(character, message);
+
     }
 }
