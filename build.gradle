@@ -43,6 +43,15 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     // JSON Parsing (챗봇 응답 파싱)
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // QueryDSL
+    implementation 'com.querydsl:querydsl-core:5.0.0'
+    annotationProcessor 'com.querydsl:querydsl-apt:5.0.0'
+    annotationProcessor 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation('com.querydsl:querydsl-mongodb') {
+        exclude group: 'org.mongodb', module: 'mongo-java-driver'
+    }
+
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -63,4 +72,10 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+compileJava {
+    options.compilerArgs += [
+            "-processor", 'lombok.launch.AnnotationProcessorHider$AnnotationProcessor,org.springframework.data.mongodb.repository.support.MongoAnnotationProcessor'
+    ]
 }
