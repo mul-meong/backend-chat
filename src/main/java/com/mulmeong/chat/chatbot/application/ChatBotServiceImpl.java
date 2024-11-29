@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class ChatBotServiceImpl implements ChatBotService {
         chatBotHistoryRepository.save(UserRequest.toUserRequest(requestDto).toEntity());
         List<ChatBotHistory> chatHistory = chatBotHistoryRepositoryCustom
                 .getRecentTenChatBotHistories(requestDto.getMemberUuid(), requestDto.getCharacter());
-
+        chatHistory.sort(Comparator.comparing(ChatBotHistory::getCreatedAt));
         // OpenAI API 요청 메시지 구성
         List<Map<String, String>> storage = chatHistory.stream()
                 .map(history -> Map.of(

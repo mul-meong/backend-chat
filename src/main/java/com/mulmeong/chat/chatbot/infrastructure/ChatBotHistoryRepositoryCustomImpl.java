@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.support.SpringDataMongodbQuery;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Repository
@@ -75,9 +76,9 @@ public class ChatBotHistoryRepositoryCustomImpl implements ChatBotHistoryReposit
 
         SpringDataMongodbQuery<ChatBotHistory> query
                 = new SpringDataMongodbQuery<>(mongoTemplate, ChatBotHistory.class);
-
+        
         return query.where(builder)
-                .orderBy(chatBotHistory.id.asc())
+                .orderBy(chatBotHistory.id.desc())
                 .limit(10)
                 .fetch();
     }
