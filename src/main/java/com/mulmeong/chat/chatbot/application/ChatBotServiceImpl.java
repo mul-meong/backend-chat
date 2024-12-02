@@ -1,6 +1,7 @@
 package com.mulmeong.chat.chatbot.application;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mulmeong.chat.EventPublisher;
 import com.mulmeong.chat.chatbot.dto.ChatBotRequestDto;
 import com.mulmeong.chat.chatbot.dto.ChatBotHistoryResponseDto;
 import com.mulmeong.chat.chatbot.dto.ChatBotResponse;
@@ -11,6 +12,7 @@ import com.mulmeong.chat.chatbot.infrastructure.ChatBotHistoryRepositoryCustom;
 import com.mulmeong.chat.common.exception.BaseException;
 import com.mulmeong.chat.common.response.BaseResponseStatus;
 import com.mulmeong.chat.common.utils.CursorPage;
+import com.mulmeong.event.chat.ChatBotChattingCreateEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +37,7 @@ public class ChatBotServiceImpl implements ChatBotService {
     private final CharacterPrompt characterPrompt;
     private final ChatBotHistoryRepository chatBotHistoryRepository;
     private final ChatBotHistoryRepositoryCustom chatBotHistoryRepositoryCustom;
+    private final EventPublisher eventPublisher;
 
     @Override
     public ChatBotResponse createChat(ChatBotRequestDto requestDto) {
@@ -43,7 +46,6 @@ public class ChatBotServiceImpl implements ChatBotService {
         if (requestDto.getCharacter().equals("dori")) {
             kind = characterPrompt.doriPrompt;
         }
-
 
         chatBotHistoryRepository.save(UserRequest.toUserRequest(requestDto).toEntity());
         List<ChatBotHistory> chatHistory = chatBotHistoryRepositoryCustom
@@ -76,7 +78,8 @@ public class ChatBotServiceImpl implements ChatBotService {
 
         ChatBotResponse chatBot = ChatBotResponse.toChatbotResponse(
                 jsonNode, requestDto.getMemberUuid(), requestDto.getCharacter());
-        chatBotHistoryRepository.save(chatBot.toEntity());
+        ChatBotHistory chatBotHistory = chatBotHistoryRepository.save(chatBot.toEntity());
+        eventPublisher.send(ChatBotChattingCreateEvent.toEvent(chatBotHistory));
         return chatBot;
     }
 
