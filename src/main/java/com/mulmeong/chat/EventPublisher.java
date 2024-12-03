@@ -1,6 +1,5 @@
 package com.mulmeong.chat;
 
-import com.mulmeong.event.chat.ChatBotChattingCreateEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +13,7 @@ public class EventPublisher {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${event.chat.pub.topics.chatbot-chatting-create.name}")
-    private String chatBotChattingCreateEventTopic;
+    @Value("${event.chat.pub.topics.chatting-create.name}")
+    private String chattingCreateEventTopic;
 
-    public void send(ChatBotChattingCreateEvent event) {
-        kafkaTemplate.send(chatBotChattingCreateEventTopic, event);
-    }
 }
