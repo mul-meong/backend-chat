@@ -76,7 +76,7 @@ public class ChatBotHistoryRepositoryCustomImpl implements ChatBotHistoryReposit
 
         SpringDataMongodbQuery<ChatBotHistory> query
                 = new SpringDataMongodbQuery<>(mongoTemplate, ChatBotHistory.class);
-        
+
         return query.where(builder)
                 .orderBy(chatBotHistory.id.desc())
                 .limit(10)
