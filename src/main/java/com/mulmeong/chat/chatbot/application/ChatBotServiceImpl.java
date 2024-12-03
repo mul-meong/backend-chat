@@ -1,7 +1,6 @@
 package com.mulmeong.chat.chatbot.application;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mulmeong.chat.EventPublisher;
 import com.mulmeong.chat.chatbot.dto.ChatBotRequestDto;
 import com.mulmeong.chat.chatbot.dto.ChatBotHistoryResponseDto;
 import com.mulmeong.chat.chatbot.dto.ChatBotResponse;
@@ -12,7 +11,6 @@ import com.mulmeong.chat.chatbot.infrastructure.ChatBotHistoryRepositoryCustom;
 import com.mulmeong.chat.common.exception.BaseException;
 import com.mulmeong.chat.common.response.BaseResponseStatus;
 import com.mulmeong.chat.common.utils.CursorPage;
-import com.mulmeong.event.chat.ChatBotChattingCreateEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,35 +35,22 @@ public class ChatBotServiceImpl implements ChatBotService {
     private final CharacterPrompt characterPrompt;
     private final ChatBotHistoryRepository chatBotHistoryRepository;
     private final ChatBotHistoryRepositoryCustom chatBotHistoryRepositoryCustom;
-    private final EventPublisher eventPublisher;
 
     @Override
     public ChatBotResponse createChat(ChatBotRequestDto requestDto) {
 
-        String kind = characterPrompt.nimoPrompt;
-        if (requestDto.getCharacter().equals("dori")) {
-            kind = characterPrompt.doriPrompt;
-        }
+        String kind = selectPrompt(requestDto.getCharacter()); //프롬프트 선택
 
         chatBotHistoryRepository.save(UserRequest.toUserRequest(requestDto).toEntity());
-        List<ChatBotHistory> chatHistory = chatBotHistoryRepositoryCustom
-                .getRecentTenChatBotHistories(requestDto.getMemberUuid(), requestDto.getCharacter());
-        chatHistory.sort(Comparator.comparing(ChatBotHistory::getCreatedAt));
-        // OpenAI API 요청 메시지 구성
-        List<Map<String, String>> storage = chatHistory.stream()
-                .map(history -> Map.of(
-                        "role", history.getRole().equals("user") ? "user" : "assistant", // OpenAI 호환 role로 변환
-                        "content", history.getMessage()
-                ))
-                .collect(Collectors.toList());
+        List<Map<String, String>> chatHistory = getChatHistory(requestDto); //사용자 메세지를 포홤한 최근 10개의 메세지
 
         // 시스템 메시지 추가
-        storage.add(0, Map.of("role", "system", "content", kind));
+        chatHistory.add(0, Map.of("role", "system", "content", kind));
 
         // API 요청 데이터
         Map<String, Object> request = Map.of(
                 "model", "gpt-3.5-turbo",
-                "messages", storage
+                "messages", chatHistory
         );
         // API 호출
         JsonNode jsonNode = webClient.post()
@@ -78,8 +63,7 @@ public class ChatBotServiceImpl implements ChatBotService {
 
         ChatBotResponse chatBot = ChatBotResponse.toChatbotResponse(
                 jsonNode, requestDto.getMemberUuid(), requestDto.getCharacter());
-        ChatBotHistory chatBotHistory = chatBotHistoryRepository.save(chatBot.toEntity());
-        eventPublisher.send(ChatBotChattingCreateEvent.toEvent(chatBotHistory));
+        chatBotHistoryRepository.save(chatBot.toEntity());
         return chatBot;
     }
 
@@ -107,6 +91,24 @@ public class ChatBotServiceImpl implements ChatBotService {
                 .getChatBotHistories(memberUuid, character, lastId, pageSize, pageNo);
         return CursorPage.toCursorPage(cursorPage, cursorPage.getContent().stream()
                 .map(ChatBotHistoryResponseDto::toDto).toList());
+    }
+
+    private String selectPrompt(String character) {
+        if ("dori".equals(character)) {
+            return characterPrompt.doriPrompt;
+        }
+        return characterPrompt.nimoPrompt;
+    }
+
+    private List<Map<String, String>> getChatHistory(ChatBotRequestDto requestDto) {
+        List<ChatBotHistory> history = chatBotHistoryRepositoryCustom
+                .getRecentTenChatBotHistories(requestDto.getMemberUuid(), requestDto.getCharacter());
+        history.sort(Comparator.comparing(ChatBotHistory::getCreatedAt));
+        return history.stream()
+                .map(chat -> Map.of(
+                        "role", chat.getRole().equals("user") ? "user" : "assistant",
+                        "content", chat.getMessage()))
+                .collect(Collectors.toList());
     }
 
 }
