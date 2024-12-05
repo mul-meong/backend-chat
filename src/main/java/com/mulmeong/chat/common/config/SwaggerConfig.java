@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(title = "채팅 도메인 API", version = "v1",
-                description = " 채팅 서비스",
+                description = " 챗봇, 채팅 서비스",
                 termsOfService = "http://swagger.io/terms/")
 
 )
