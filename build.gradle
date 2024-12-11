@@ -60,9 +60,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    //redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
