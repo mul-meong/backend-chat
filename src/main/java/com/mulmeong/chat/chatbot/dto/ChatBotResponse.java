@@ -15,13 +15,16 @@ public class ChatBotResponse { //챗봇 응답
     private String character;
     private String role;
     private String message;
+    private String chatRoomUuid;
     private LocalDateTime createdAt;
 
     //챗봇 응답처리
-    public static ChatBotResponse toChatbotResponse(JsonNode jsonNode, String memberUuid, String character) {
+    public static ChatBotResponse toChatbotResponse(
+            JsonNode jsonNode, String memberUuid, String character, String chatRoomUuid) {
         return ChatBotResponse.builder()
                 .role(jsonNode.path("choices").get(0).path("message").path("role").asText())
                 .message(jsonNode.path("choices").get(0).path("message").path("content").asText())
+                .chatRoomUuid(chatRoomUuid)
                 .memberUuid(memberUuid)
                 .character(character)
                 .createdAt(LocalDateTime.now())
@@ -32,6 +35,7 @@ public class ChatBotResponse { //챗봇 응답
         return ChatBotHistory.builder()
                 .memberUuid(memberUuid)
                 .character(character)
+                .chatRoomUuid(chatRoomUuid)
                 .role(role)
                 .message(message)
                 .createdAt(createdAt)

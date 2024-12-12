@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class ChatBotHistory {
     @Id
     private String id;
+    private String chatRoomUuid;
     private String memberUuid;
     private String character;
     private String role;

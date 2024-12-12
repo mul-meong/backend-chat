@@ -68,6 +68,45 @@ public class ChatBotHistoryRepositoryCustomImpl implements ChatBotHistoryReposit
     }
 
     @Override
+    public CursorPage<ChatBotHistory> getChatBotHistoriesByChatRoomUuid(
+            String memberUuid, String chatRoomUuid, String lastId, Integer pageSize, Integer pageNo) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        builder.and(chatBotHistory.memberUuid.eq(memberUuid));
+        builder.and(chatBotHistory.chatRoomUuid.eq(chatRoomUuid));
+
+        if (lastId != null) {
+            builder.and(chatBotHistory.id.lt(lastId));
+        }
+
+        int currentPage = pageNo != null ? pageNo : DEFAULT_PAGE_NUMBER;
+        int currentPageSize = pageSize != null ? pageSize : DEFAULT_PAGE_SIZE;
+        int offset = Math.max(0, (currentPage - 1) * currentPageSize);
+
+        SpringDataMongodbQuery<ChatBotHistory> query
+                = new SpringDataMongodbQuery<>(mongoTemplate, ChatBotHistory.class);
+
+        query.where(builder)
+                .orderBy(chatBotHistory.id.desc())
+                .offset(offset)
+                .limit(currentPageSize + 1);
+
+        List<ChatBotHistory> chatBotHistories = query.fetch();
+
+
+        boolean hasNext = chatBotHistories.size() > currentPageSize;
+        String nextCursor = null;
+        if (hasNext) {
+            chatBotHistories = chatBotHistories.subList(0, currentPageSize);  // 실제 페이지 사이즈 만큼 자르기
+            nextCursor = chatBotHistories.get(currentPageSize - 1).getId();
+
+        }
+
+        return new CursorPage<>(chatBotHistories, nextCursor, hasNext, pageSize, pageNo);
+    }
+
+    @Override
     public List<ChatBotHistory> getRecentTenChatBotHistories(String memberUuid, String character) {
         BooleanBuilder builder = new BooleanBuilder();
 

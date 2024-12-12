@@ -17,6 +17,13 @@ public interface ChatBotHistoryRepositoryCustom {
             Integer pageSize,
             Integer pageNo);
 
+    CursorPage<ChatBotHistory> getChatBotHistoriesByChatRoomUuid(
+            String memberUuid,
+            String chatRoomUuid,
+            String lastId,
+            Integer pageSize,
+            Integer pageNo);
+
     List<ChatBotHistory> getRecentTenChatBotHistories(
             String memberUuid,
             String character);
