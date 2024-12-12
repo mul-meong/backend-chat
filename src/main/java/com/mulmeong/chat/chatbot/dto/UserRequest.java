@@ -14,12 +14,14 @@ public class UserRequest { //사용자 메세지
     private String character;
     private String role;
     private String message;
+    private String chatRoomUuid;
     private LocalDateTime createdAt;
 
-    public static UserRequest toUserRequest(ChatBotRequestDto dto) {
+    public static UserRequest toUserRequest(ChatBotRequestDto dto, String chatRoomUuid) {
         return UserRequest.builder()
                 .role("user")
                 .message(dto.getMessage())
+                .chatRoomUuid(chatRoomUuid)
                 .memberUuid(dto.getMemberUuid())
                 .character(dto.getCharacter())
                 .createdAt(LocalDateTime.now())
@@ -30,6 +32,7 @@ public class UserRequest { //사용자 메세지
         return ChatBotHistory.builder()
                 .memberUuid(memberUuid)
                 .character(character)
+                .chatRoomUuid(chatRoomUuid)
                 .role(role)
                 .message(message)
                 .createdAt(createdAt)
