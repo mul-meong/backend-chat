@@ -35,7 +35,6 @@ ext {
 dependencies {
     // spring starters
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // config
@@ -47,11 +46,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 
     // swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-//    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webflux-ui', version: '2.2.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.6.0'
 
-    // WebSocket Support (실시간 통신)
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
     // JSON Parsing (챗봇 응답 파싱)
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
