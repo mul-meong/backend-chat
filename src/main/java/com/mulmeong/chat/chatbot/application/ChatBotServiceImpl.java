@@ -38,6 +38,7 @@ public class ChatBotServiceImpl implements ChatBotService {
     private final ChatBotHistoryRepositoryCustom chatBotHistoryRepositoryCustom;
 
     @Override
+    @Transactional
     public ChatBotResponse createChat(ChatBotRequestDto requestDto) {
 
         ChatBotChatRoom chatRoom = findChatRoom(requestDto.getMemberUuid(), requestDto.getCharacter());
@@ -88,6 +89,7 @@ public class ChatBotServiceImpl implements ChatBotService {
     }
 
     @Override
+    @Transactional
     public void deleteChatRoom(String memberUuid, String chatRoomUuid) {
         if (!chatBotHistoryRepository.existsByMemberUuid(memberUuid)) {
             throw new BaseException(BaseResponseStatus.NO_DELETE_CHAT_HISTORY_AUTHORITY);
