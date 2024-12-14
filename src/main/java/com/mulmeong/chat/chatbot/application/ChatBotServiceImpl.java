@@ -131,10 +131,12 @@ public class ChatBotServiceImpl implements ChatBotService {
     }
 
     private ChatBotChatRoom findChatRoom(String memberUuid, String character) {
-        return chatBotChatRoomRepository
-                .findByMemberUuidAndCharacter(memberUuid, character)
-                .orElse(chatBotChatRoomRepository.save(ChatBotChatRoomRequestDto.toDto(memberUuid, character)
-                        .toEntity()));
+        if (chatBotChatRoomRepository.existsByMemberUuidAndCharacter(memberUuid, character)) {
+            return chatBotChatRoomRepository.findByMemberUuidAndCharacter(memberUuid, character)
+                    .orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_CHAT_ROOM));
+        }
+        return chatBotChatRoomRepository.save(ChatBotChatRoomRequestDto.toDto(memberUuid, character)
+                .toEntity());
     }
 
     private String selectPrompt(String character) {
