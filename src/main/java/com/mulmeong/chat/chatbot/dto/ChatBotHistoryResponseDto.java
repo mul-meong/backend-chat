@@ -15,6 +15,7 @@ public class ChatBotHistoryResponseDto {
     private String character;
     private String role;
     private String message;
+    private String chatRoomUuid;
     private LocalDateTime createdAt;
 
 
@@ -25,6 +26,7 @@ public class ChatBotHistoryResponseDto {
                 .memberUuid(chatBotHistory.getMemberUuid())
                 .createdAt(chatBotHistory.getCreatedAt())
                 .character(chatBotHistory.getCharacter())
+                .chatRoomUuid(chatBotHistory.getChatRoomUuid())
                 .build();
     }
 
@@ -35,6 +37,7 @@ public class ChatBotHistoryResponseDto {
                 .memberUuid(memberUuid)
                 .createdAt(createdAt)
                 .character(character)
+                .chatRoomUuid(chatRoomUuid)
                 .build();
     }
 
