@@ -3,7 +3,6 @@ package com.mulmeong.chat.common.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 @Getter
 @AllArgsConstructor
@@ -26,8 +25,12 @@ public enum BaseResponseStatus {
 
     NO_DELETE_CHAT_HISTORY_AUTHORITY(HttpStatus.FORBIDDEN, false, 4100, "채팅 내역 삭제 권한이 없습니다."),
     NO_EXIST_CHAT_HISTORY(HttpStatus.NOT_FOUND, false, 4101, "채팅 내역이 존재하지 않습니다."),
-    NO_EXIST_CHAT_ROOM(HttpStatus.NOT_FOUND, false, 4102, "채팅방이 존재하지 않습니다.");
-    private final HttpStatusCode httpStatusCode;
+    NO_EXIST_CHAT_ROOM(HttpStatus.NOT_FOUND, false, 4102, "채팅방이 존재하지 않습니다."),
+
+    NO_ACCESS_AUTHORITY(HttpStatus.FORBIDDEN, false, 4200, "채팅방에 접근할 수 없습니다."),
+    NO_CHAT_ROOM(HttpStatus.NOT_FOUND, false, 4201, "존재하지 않는 채팅방입니다.");
+
+    private final HttpStatus httpStatusCode;
     private final boolean isSuccess;
     private final int code;
     private final String message;
