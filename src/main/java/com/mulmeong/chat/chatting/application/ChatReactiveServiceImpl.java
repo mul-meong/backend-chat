@@ -3,7 +3,8 @@ package com.mulmeong.chat.chatting.application;
 import com.mongodb.client.model.changestream.OperationType;
 import com.mulmeong.chat.chatting.domain.document.Chat;
 import com.mulmeong.chat.chatting.dto.out.ChatDto;
-import com.mulmeong.chat.chatting.infrastructure.reactive.ChatReactiveMongoRepository;
+import com.mulmeong.chat.chatting.infrastructure.reactive.ChatReactiveRepository;
+import com.mulmeong.chat.chatting.infrastructure.reactive.ChatRoomReactiveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
@@ -20,31 +21,53 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 public class ChatReactiveServiceImpl implements ChatReactiveService {
 
-    private final ChatReactiveMongoRepository chatReactiveRepository;
+    private final ChatReactiveRepository chatReactiveRepository;
     private final ReactiveMongoTemplate reactiveMongoTemplate;
+    private final ChatRoomReactiveRepository chatRoomReactiveRepository;
+    private static final String COLLECTION_NAME = "chat";
 
+    /**
+     * 특정 채팅방의 모든 채팅을 가져옴
+     * roomUuid로 조회하고, timeStamp 이후의 채팅을 가져와 ChatDto로 변환하여 반환.
+     * todo: 페이지네이션.
+     *
+     * @param roomUuid 채팅방 식별자
+     * @return ChatDto의 Flux 반환
+     */
     @Override
     public Flux<ChatDto> getChatByRoomUuid(String roomUuid) {
+
         return chatReactiveRepository.findByRoomUuid(roomUuid)
                 .map(ChatDto::fromEntity);
     }
 
+    /**
+     * 특정 채팅방의 신규 채팅을 구독
+     * ChangeStream 설정을 가져와 신규 채팅을 구독하고, ChatDto로 변환하여 반환.
+     *
+     * @param roomUuid 채팅방 식별자
+     * @return ChatDto의 Flux 반환
+     */
     @Override
     public Flux<ChatDto> getNewChatByRoomUuid(String roomUuid) {
-        log.info("뉴 챗 : " + roomUuid);
-        ChangeStreamOptions options = getChangeStreamOptions(roomUuid);
 
         Flux<Chat> chatFlux = reactiveMongoTemplate.changeStream(// Flux<ChangeStreamEvent<Document>> 반환
-                        "chat", // collection 이름
-                        options, // ChangeStreamOptions
-                        Document.class) // 반환 타입
+                        COLLECTION_NAME, getChangeStreamOptions(roomUuid), Document.class) //
                 .map(ChangeStreamEvent::getBody) // ChangeStreamEvent<Document> -> Document로 변환
                 .map(document -> from(document)); // Document -> Chat으로 변환
 
-        log.info("chatFlux: {}", chatFlux);
         return chatFlux.map(ChatDto::fromEntity);
     }
 
+    // ======================= private =======================
+
+    /**
+     * ChangeStreamOptions 설정
+     * 실시간 변경사항을 구독하기 위한 옵션 설정.
+     *
+     * @param roomUuid 채팅방 식별자
+     * @return ChangeStreamOptions 객체
+     */
     private static ChangeStreamOptions getChangeStreamOptions(String roomUuid) {
         ChangeStreamOptions options = ChangeStreamOptions.builder() // ChangeStream 옵션 설정
                 .filter(Aggregation.newAggregation(// Aggregation을 통해 필터링
@@ -57,6 +80,12 @@ public class ChatReactiveServiceImpl implements ChatReactiveService {
         return options;
     }
 
+    /**
+     * Document -> Chat 변환.
+     *
+     * @param document Document 객체
+     * @return Chat 객체
+     */
     private Chat from(Document document) {
         return Chat.builder()
                 .roomUuid(document.getString("roomUuid"))
