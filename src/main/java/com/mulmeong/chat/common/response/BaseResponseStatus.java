@@ -25,7 +25,8 @@ public enum BaseResponseStatus {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, 900, "요청 처리 중 에러가 발생하였습니다."),
 
     NO_DELETE_CHAT_HISTORY_AUTHORITY(HttpStatus.FORBIDDEN, false, 4100, "채팅 내역 삭제 권한이 없습니다."),
-    NO_EXIST_CHAT_HISTORY(HttpStatus.NOT_FOUND, false, 4101, "채팅 내역이 존재하지 않습니다.");
+    NO_EXIST_CHAT_HISTORY(HttpStatus.NOT_FOUND, false, 4101, "채팅 내역이 존재하지 않습니다."),
+    NO_EXIST_CHAT_ROOM(HttpStatus.NOT_FOUND, false, 4102, "채팅방이 존재하지 않습니다.");
     private final HttpStatusCode httpStatusCode;
     private final boolean isSuccess;
     private final int code;
