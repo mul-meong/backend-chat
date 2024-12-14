@@ -1,37 +1,30 @@
 package com.mulmeong.chat.chatting.dto.out;
 
 import com.mulmeong.chat.chatting.domain.document.ChatRoom;
-import com.mulmeong.chat.chatting.vo.out.ChatRoomResponseVo;
+import com.mulmeong.chat.chatting.domain.model.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class ChatRoomCreateResponseDto {
-
     private String roomUuid;
-    private String counterPartUuid;
-    private String createdAt;
-    private String updatedAt;
+    private List<Participant> participants;
+    private Instant createdAt;
+    private Instant updatedAt;
     private boolean isNewRoom;
-
-    public ChatRoomResponseVo toVo() {
-        return ChatRoomResponseVo.builder()
-                .roomUuid(roomUuid)
-                .counterPartUuid(counterPartUuid)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .build();
-    }
 
     public static ChatRoomCreateResponseDto fromEntity(ChatRoom chatRoom, boolean isNewRoom) {
         return ChatRoomCreateResponseDto.builder()
                 .roomUuid(chatRoom.getRoomUuid())
-                .counterPartUuid(chatRoom.getParticipants().get(1).getMemberUuid())
-                .createdAt(chatRoom.getCreatedAt().toString())
-                .updatedAt(chatRoom.getUpdatedAt().toString())
+                .participants(chatRoom.getParticipants())
+                .createdAt(chatRoom.getCreatedAt())
+                .updatedAt(chatRoom.getUpdatedAt())
                 .isNewRoom(isNewRoom)
                 .build();
     }

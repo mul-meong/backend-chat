@@ -26,6 +26,7 @@ public class ChatRoomCreateRequestDto {
                         defaultParticipant(memberUuid),
                         defaultParticipant(counterPartUuid)))
                 .createdAt(Instant.now())
+                .updatedAt(Instant.now())
                 .build();
     }
 }
