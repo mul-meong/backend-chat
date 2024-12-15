@@ -3,6 +3,7 @@ package com.mulmeong.chat.chatbot.vo;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,5 +14,5 @@ public class ChatBotHistoryResponseVo {
     private String role;
     private String message;
     private String chatRoomUuid;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

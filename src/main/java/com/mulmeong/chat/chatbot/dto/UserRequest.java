@@ -4,6 +4,7 @@ import com.mulmeong.chat.chatbot.entity.ChatBotHistory;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Builder
@@ -24,7 +25,6 @@ public class UserRequest { //사용자 메세지
                 .chatRoomUuid(chatRoomUuid)
                 .memberUuid(dto.getMemberUuid())
                 .character(dto.getCharacter())
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 
@@ -35,7 +35,7 @@ public class UserRequest { //사용자 메세지
                 .chatRoomUuid(chatRoomUuid)
                 .role(role)
                 .message(message)
-                .createdAt(createdAt)
+                .createdAt(Instant.now())
                 .build();
     }
 }

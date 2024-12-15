@@ -5,6 +5,7 @@ import com.mulmeong.chat.chatbot.vo.ChatBotHistoryResponseVo;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Builder
@@ -16,7 +17,7 @@ public class ChatBotHistoryResponseDto {
     private String role;
     private String message;
     private String chatRoomUuid;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
 
     public static ChatBotHistoryResponseDto toDto(ChatBotHistory chatBotHistory) {
