@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 public class ChatBotServiceImpl implements ChatBotService {
 
     @Value("${API-KEY.key}")
-    private String apiKey;
+    private String openAiKey;
     private final WebClient webClient = WebClient.builder()
             .baseUrl("https://api.openai.com/v1/chat/completions").build();
 
@@ -39,14 +40,19 @@ public class ChatBotServiceImpl implements ChatBotService {
 
     @Override
     @Transactional
-    public ChatBotResponse createChat(ChatBotRequestDto requestDto) {
+    public Mono<ChatBotResponse> createChat(ChatBotRequestDto requestDto) {
 
+        // 채팅방 찾기
         ChatBotChatRoom chatRoom = findChatRoom(requestDto.getMemberUuid(), requestDto.getCharacter());
 
-        String kind = selectPrompt(requestDto.getCharacter()); //프롬프트 선택
+        // 프롬프트 선택
+        String kind = selectPrompt(requestDto.getCharacter());
 
+        // 사용자가 보낸 메시지와 채팅방 정보를 DB에 저장
         chatBotHistoryRepository.save(UserRequest.toUserRequest(requestDto, chatRoom.getChatRoomUuid()).toEntity());
-        List<Map<String, String>> chatHistory = getChatHistory(requestDto); //사용자 메세지를 포홤한 최근 10개의 메세지
+
+        // 최근 10개의 메시지 가져오기
+        List<Map<String, String>> chatHistory = getChatHistory(requestDto);
 
         // 시스템 메시지 추가
         chatHistory.add(0, Map.of("role", "system", "content", kind));
@@ -56,19 +62,27 @@ public class ChatBotServiceImpl implements ChatBotService {
                 "model", "gpt-3.5-turbo",
                 "messages", chatHistory
         );
-        // API 호출
-        JsonNode jsonNode = webClient.post()
-                .header("Authorization", "Bearer " + apiKey)
+
+        // API 호출 (비동기적으로 처리)
+        Mono<ChatBotResponse> chatResponse = webClient.post()
+                .header("Authorization", "Bearer " + openAiKey)
                 .header("Content-Type", "application/json")
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(JsonNode.class)
-                .block();
+                .bodyToMono(JsonNode.class) // Mono<JsonNode>로 반환
+                .flatMap(response -> {
+                    // API 응답을 기반으로 ChatBotResponse 생성
+                    ChatBotResponse chatBot = ChatBotResponse.toChatbotResponse(
+                            response,
+                            requestDto.getMemberUuid(),
+                            requestDto.getCharacter(),
+                            chatRoom.getChatRoomUuid());
 
-        ChatBotResponse chatBot = ChatBotResponse.toChatbotResponse(
-                jsonNode, requestDto.getMemberUuid(), requestDto.getCharacter(), chatRoom.getChatRoomUuid());
-        chatBotHistoryRepository.save(chatBot.toEntity());
-        return chatBot;
+                    // DB에 저장 후 반환
+                    chatBotHistoryRepository.save(chatBot.toEntity()); // chatBot을 Mono로 반환
+                    return Mono.just(chatBot);
+                });
+        return chatResponse;
     }
 
     @Override
