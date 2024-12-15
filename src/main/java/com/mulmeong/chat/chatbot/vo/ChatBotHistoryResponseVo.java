@@ -14,5 +14,5 @@ public class ChatBotHistoryResponseVo {
     private String role;
     private String message;
     private String chatRoomUuid;
-    private Instant createdAt;
+    private String createdAt;
 }
