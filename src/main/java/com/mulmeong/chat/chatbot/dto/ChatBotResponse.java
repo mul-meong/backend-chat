@@ -5,6 +5,7 @@ import com.mulmeong.chat.chatbot.entity.ChatBotHistory;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Builder
@@ -16,7 +17,6 @@ public class ChatBotResponse { //챗봇 응답
     private String role;
     private String message;
     private String chatRoomUuid;
-    private LocalDateTime createdAt;
 
     //챗봇 응답처리
     public static ChatBotResponse toChatbotResponse(
@@ -27,7 +27,6 @@ public class ChatBotResponse { //챗봇 응답
                 .chatRoomUuid(chatRoomUuid)
                 .memberUuid(memberUuid)
                 .character(character)
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 
@@ -38,7 +37,7 @@ public class ChatBotResponse { //챗봇 응답
                 .chatRoomUuid(chatRoomUuid)
                 .role(role)
                 .message(message)
-                .createdAt(createdAt)
+                .createdAt(Instant.now())
                 .build();
     }
 }

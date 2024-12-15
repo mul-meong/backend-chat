@@ -1,12 +1,14 @@
 package com.mulmeong.chat.chatbot.application;
 
 import com.mulmeong.chat.chatbot.dto.*;
+import com.mulmeong.chat.chatbot.entity.ChatBotHistory;
 import com.mulmeong.chat.common.utils.CursorPage;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 public interface ChatBotService {
-    ChatBotResponse createChat(ChatBotRequestDto requestDto);
+    Mono<ChatBotResponse> createChat(ChatBotRequestDto requestDto);
 
     void deleteChat(String memberUuid, String character);
 

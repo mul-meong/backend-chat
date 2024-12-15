@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class ChatBotAuthController {
 
     @GetMapping
     @Operation(summary = "캐릭터별 챗봇 대화 생성", tags = {"ChatBot Service"})
-    public BaseResponse<ChatBotResponse> getChatBotHistoryByPage(
+    public Mono<ChatBotResponse> getChatBotHistoryByPage(
             @RequestHeader("Member-Uuid") String memberUuid,
             @Parameter(
                     description = "캐릭터 종류",
@@ -39,9 +40,7 @@ public class ChatBotAuthController {
                 .memberUuid(memberUuid)
                 .build();
         ChatBotRequestDto requestDto = ChatBotRequestDto.toDto(requestVo, character, "user");
-        System.out.println(requestDto.getMessage());
-        ChatBotResponse response = chatBotService.createChat(requestDto);
-        return new BaseResponse<>(response);
+        return chatBotService.createChat(requestDto);
     }
 
     @DeleteMapping
