@@ -26,6 +26,5 @@ public class ChatBotHistory {
     private String role;
     private String message;
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Instant createdAt;
 }

@@ -14,7 +14,6 @@ public class Participant {
     private String memberUuid;
     private Boolean deleteStatus;
     private Instant deletedAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Instant readTimeStamp;
 
     public static Participant defaultParticipant(String memberUuid) {
