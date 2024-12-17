@@ -41,7 +41,6 @@ public class ChatBotServiceImpl implements ChatBotService {
     @Override
     @Transactional
     public Mono<ChatBotResponse> createChat(ChatBotRequestDto requestDto) {
-
         // 채팅방 찾기
         ChatBotChatRoom chatRoom = findChatRoom(requestDto.getMemberUuid(), requestDto.getCharacter());
 
