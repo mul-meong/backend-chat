@@ -41,6 +41,8 @@ public class ChatBotServiceImpl implements ChatBotService {
     @Override
     @Transactional
     public Mono<ChatBotResponse> createChat(ChatBotRequestDto requestDto) {
+        log.info("chatbot Service-> requestDto: {}", requestDto);
+
         // 채팅방 찾기
         ChatBotChatRoom chatRoom = findChatRoom(requestDto.getMemberUuid(), requestDto.getCharacter());
 
@@ -81,6 +83,7 @@ public class ChatBotServiceImpl implements ChatBotService {
                     chatBotHistoryRepository.save(chatBot.toEntity()); // chatBot을 Mono로 반환
                     return Mono.just(chatBot);
                 });
+        log.info("chatbot Service Response-> response: {}", chatResponse);
         return chatResponse;
     }
 
