@@ -16,7 +16,6 @@ public class UserRequest { //사용자 메세지
     private String role;
     private String message;
     private String chatRoomUuid;
-    private LocalDateTime createdAt;
 
     public static UserRequest toUserRequest(ChatBotRequestDto dto, String chatRoomUuid) {
         return UserRequest.builder()

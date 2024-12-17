@@ -24,10 +24,8 @@ public class ChatRoom {
     private String roomUuid;
     private List<Participant> participants;
     @CreatedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Instant createdAt;
     @LastModifiedDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Instant updatedAt;
 
     @Builder
