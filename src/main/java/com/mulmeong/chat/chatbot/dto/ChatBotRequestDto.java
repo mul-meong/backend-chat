@@ -3,9 +3,11 @@ package com.mulmeong.chat.chatbot.dto;
 import com.mulmeong.chat.chatbot.vo.ChatBotRequestVo;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Builder
 @Getter
+@ToString
 public class ChatBotRequestDto {
     private String memberUuid;
     private String character;

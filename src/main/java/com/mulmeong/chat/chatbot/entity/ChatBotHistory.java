@@ -1,5 +1,6 @@
 package com.mulmeong.chat.chatbot.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

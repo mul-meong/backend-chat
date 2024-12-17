@@ -1,6 +1,7 @@
 package com.mulmeong.chat.chatting.domain.document;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

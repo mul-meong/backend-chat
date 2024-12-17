@@ -35,12 +35,15 @@ public class ChatBotAuthController {
             @RequestParam(value = "character") String character,
             @RequestParam String message
     ) {
+        log.info("chatbot Controller-> character: {}, message: {}", character, message);
         ChatBotRequestVo requestVo = ChatBotRequestVo.builder()
                 .message(message)
                 .memberUuid(memberUuid)
                 .build();
         ChatBotRequestDto requestDto = ChatBotRequestDto.toDto(requestVo, character, "user");
-        return chatBotService.createChat(requestDto);
+        Mono<ChatBotResponse> response = chatBotService.createChat(requestDto);
+        log.info("chatbot Controller Response -> response: {}", response.toString());
+        return response;
     }
 
     @DeleteMapping
