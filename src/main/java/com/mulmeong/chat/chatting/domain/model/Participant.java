@@ -1,5 +1,6 @@
 package com.mulmeong.chat.chatting.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class Participant {
     private String memberUuid;
     private Boolean deleteStatus;
     private Instant deletedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private Instant readTimeStamp;
 
     public static Participant defaultParticipant(String memberUuid) {
